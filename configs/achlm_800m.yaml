@@ -1,0 +1,50 @@
+# AchLLM 800M Training Configuration
+model:
+  hidden_dim: 1024
+  num_blocks: 24
+  num_experts: 8
+  top_k_experts: 1
+  vocab_size: 32000
+  max_seq_len: 4096
+  mamba_state_dim: 64
+  mamba_conv_width: 4
+  gqa_num_q_heads: 8
+  gqa_num_kv_heads: 4
+  moe_positions: [12, 20]
+  attn_positions: [5, 11, 18, 23]
+
+training:
+  total_tokens: 50_000_000_000   # 50B tokens
+  batch_size: 512
+  seq_len: 2048
+  learning_rate: 3.0e-4
+  warmup_steps: 2000
+  lr_schedule: cosine
+  weight_decay: 0.1
+  gradient_clip: 1.0
+  optimizer: adamw
+  bf16: true                     # BF16 activations, ternary weights
+  moe_aux_loss_weight: 0.01
+  checkpoint_every_tokens: 5_000_000_000
+  gradient_accumulation_steps: 64  # Simulate batch_size=512 with smaller actual batch
+
+data:
+  sources:
+    - name: fineweb-edu
+      weight: 0.6               # 60% general web (cleaned, educational)
+      hf_path: HuggingFaceFW/fineweb-edu
+    - name: the-stack-smol
+      weight: 0.2               # 20% code (MIT licensed)
+      hf_path: bigcode/the-stack-smol
+    - name: open-web-math
+      weight: 0.2               # 20% math reasoning
+      hf_path: open-web-math/open-web-math
+
+tokenizer:
+  type: bpe
+  vocab_size: 32000
+  train_on: first 10B tokens of fineweb-edu
+
+logging:
+  wandb_project: achllm
+  log_every: 100  # steps

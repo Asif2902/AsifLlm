@@ -1,0 +1,31 @@
+# Training data (too large for git)
+achlm_training_data/
+*.jsonl
+*.gguf
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# PyTorch
+*.pth
+*.pt
+*.bin
+*.safetensors
+checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
